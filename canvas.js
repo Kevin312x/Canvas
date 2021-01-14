@@ -27,7 +27,7 @@ window.addEventListener('load', (e) => {
     const draw = (e) => {
         if(!draw_flag) { return; }
         ctx.strokeStyle = color_selected;
-        ctx.lineWidth = 5;
+        ctx.lineWidth = brush_size;
         ctx.lineCap = 'round';
         ctx.lineTo(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top);
         ctx.stroke();
@@ -59,4 +59,27 @@ window.addEventListener('resize', () => {
 
 color_picker.addEventListener('change', (e) => {
     color_selected = e.target.value;
-})
+});
+
+// Get brush size elements
+const brush_size_decr_ele = document.querySelector('#decrease-brush-size');
+const brush_size_incr_ele = document.querySelector('#increase-brush-size');
+const brush_size_ele = document.querySelector('#brush-size');
+let brush_size = parseInt(brush_size_ele.value);
+
+// Decrease and display brush size
+brush_size_decr_ele.addEventListener('click', () => {
+    brush_size -= 1;
+    brush_size_ele.value = brush_size;
+});
+
+// Increase and display brush size
+brush_size_incr_ele.addEventListener('click', () => {
+    brush_size += 1;
+    brush_size_ele.value = brush_size;
+});
+
+// Modify brush size from display
+brush_size_ele.addEventListener('change', (e) => {
+    brush_size = e.target.value;
+});

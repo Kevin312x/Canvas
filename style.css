@@ -3,6 +3,18 @@
     padding: 0;
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .container {
     width: 70%;
     margin: 2rem auto;
@@ -10,4 +22,34 @@
 
 #canvas {
     border: 2px solid black;
+}
+
+.tools-row {
+    display: flex;
+    justify-content: space-between;
+    height: 35px;
+}
+
+#color-picker {
+    height: 100%;
+}
+
+#brush-size-group {
+    display: flex;
+    height: 100%;
+}
+
+#brush-size {
+    box-sizing: border-box;
+    text-align: center;
+    width: 45px;
+    height: 100%;
+}
+
+button {
+    cursor: pointer;
+    height: 100%;
+    width: 25px;
+    padding: 5px 5px;
+    text-align: center;
 }

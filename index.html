@@ -9,9 +9,15 @@
 <body>
     <div class="container">
         <canvas id="canvas"></canvas>
-        <input type="color" id="color-picker" value="#000000">
+        <div class="tools-row">
+            <input type="color" id="color-picker" value="#000000">
+            <div id="brush-size-group">
+                <button id="decrease-brush-size">-</button>
+                <input type="number" id="brush-size" value="10">
+                <button id="increase-brush-size">+</button>
+            </div>
+        </div>
     </div>
-
 </body>
 <script src="canvas.js"></script>
 </html>
