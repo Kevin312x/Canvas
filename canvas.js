@@ -1,7 +1,13 @@
+// Get canvas element and context
 const canvas = document.querySelector('#canvas');
 const ctx = canvas.getContext('2d');
-const ctx_rect= ctx.canvas.getBoundingClientRect();
+let ctx_rect= ctx.canvas.getBoundingClientRect();
 
+// Create a dummy canvas to save canvas state
+const canvas_memory = document.createElement('canvas');
+const ctx_memory = canvas_memory.getContext('2d');
+
+// Get element and hex value of color
 const color_picker = document.querySelector('#color-picker');
 let color_selected = color_picker.value;
 
@@ -38,7 +44,17 @@ window.addEventListener('load', (e) => {
 });
 
 window.addEventListener('resize', () => {
-    
+    // Save canvas state into canvas memory (dimensions and drawing) 
+    canvas_memory.height = canvas.height;
+    canvas_memory.width = canvas.width;
+    ctx_memory.drawImage(canvas, 0, 0);
+
+    // Resize and restore canvas from canvas memory
+    canvas.style.width ='100%';
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = 500;
+    ctx.drawImage(canvas_memory, 0, 0);
+    ctx_rect= ctx.canvas.getBoundingClientRect();
 });
 
 color_picker.addEventListener('change', (e) => {
