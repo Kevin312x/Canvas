@@ -2,6 +2,9 @@ const canvas = document.querySelector('#canvas');
 const ctx = canvas.getContext('2d');
 const ctx_rect= ctx.canvas.getBoundingClientRect();
 
+const color_picker = document.querySelector('#color-picker');
+let color_selected = color_picker.value;
+
 window.addEventListener('load', (e) => {
     let draw_flag = false;
 
@@ -17,7 +20,7 @@ window.addEventListener('load', (e) => {
 
     const draw = (e) => {
         if(!draw_flag) { return; }
-        ctx.strokeStyle = 'black';
+        ctx.strokeStyle = color_selected;
         ctx.lineWidth = 5;
         ctx.lineCap = 'round';
         ctx.lineTo(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top);
@@ -37,3 +40,7 @@ window.addEventListener('load', (e) => {
 window.addEventListener('resize', () => {
     
 });
+
+color_picker.addEventListener('change', (e) => {
+    color_selected = e.target.value;
+})
