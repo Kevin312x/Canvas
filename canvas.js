@@ -1,12 +1,18 @@
+const canvas = document.querySelector('#canvas');
+const ctx = canvas.getContext('2d');
+const ctx_rect= ctx.canvas.getBoundingClientRect();
+
 window.addEventListener('load', (e) => {
     let draw_flag = false;
-    const canvas = document.querySelector('#canvas');
-    const ctx = canvas.getContext('2d');
+
+    canvas.style.width ='100%';
+    canvas.width  = canvas.offsetWidth;
     canvas.height = 500;
-    canvas.width = 1500;
+
     const mousedown_event = (e) => {
         draw_flag = true;
         ctx.beginPath();
+        draw(e);
     }
 
     const draw = (e) => {
@@ -14,7 +20,7 @@ window.addEventListener('load', (e) => {
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 5;
         ctx.lineCap = 'round';
-        ctx.lineTo(e.clientX, e.clientY);
+        ctx.lineTo(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top);
         ctx.stroke();
     }
 
@@ -26,4 +32,8 @@ window.addEventListener('load', (e) => {
     canvas.addEventListener('mousedown', mousedown_event);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', mouseup_event);
+});
+
+window.addEventListener('resize', () => {
+    
 });
