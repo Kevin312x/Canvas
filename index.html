@@ -8,13 +8,19 @@
 </head>
 <body>
     <div class="container">
-        <canvas id="canvas"></canvas>
+        <canvas class="canvas"></canvas>
         <div class="tools-row">
-            <input type="color" id="color-picker" value="#000000">
-            <div id="brush-size-group">
+            <input type="color" class="color-picker" value="#000000">
+            <div class="brush-size-group">
                 <button id="decrease-brush-size">-</button>
-                <input type="number" id="brush-size" value="10">
+                <input type="number" class="brush-size" value="10">
                 <button id="increase-brush-size">+</button>
+            </div>
+            <div class="tools">
+                <button>Pen</button>
+                <button>Eraser</button>
+                <button>Fill</button>
+                <button>Clear</button>
             </div>
         </div>
     </div>

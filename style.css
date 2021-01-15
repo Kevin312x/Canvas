@@ -20,7 +20,7 @@ input[type=number] {
     margin: 2rem auto;
 }
 
-#canvas {
+.canvas {
     border: 2px solid black;
 }
 
@@ -30,16 +30,16 @@ input[type=number] {
     height: 35px;
 }
 
-#color-picker {
+.color-picker {
     height: 100%;
 }
 
-#brush-size-group {
+.brush-size-group {
     display: flex;
     height: 100%;
 }
 
-#brush-size {
+.brush-size {
     box-sizing: border-box;
     text-align: center;
     width: 45px;
@@ -48,8 +48,33 @@ input[type=number] {
 
 button {
     cursor: pointer;
+    border: 1px solid #ccc;
+}
+
+button:hover {
+    background-color: #e6e6e6;
+}
+
+button.active {
+    background: #e5e5e5;
+    box-shadow: inset 0px 0px 5px #c1c1c1;
+}
+
+button:focus {
+    outline: none;
+}
+
+.brush-size-group > button {
     height: 100%;
     width: 25px;
     padding: 5px 5px;
     text-align: center;
+}
+
+.tools > button {
+    height: 100%;
+    line-height: 1.5;
+    padding: 5px 5px;
+    text-align: center;
+    align-self: center;
 }

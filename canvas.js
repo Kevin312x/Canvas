@@ -1,5 +1,5 @@
 // Get canvas element and context
-const canvas = document.querySelector('#canvas');
+const canvas = document.querySelector('.canvas');
 const ctx = canvas.getContext('2d');
 let ctx_rect= ctx.canvas.getBoundingClientRect();
 
@@ -8,7 +8,7 @@ const canvas_memory = document.createElement('canvas');
 const ctx_memory = canvas_memory.getContext('2d');
 
 // Get element and hex value of color
-const color_picker = document.querySelector('#color-picker');
+const color_picker = document.querySelector('.color-picker');
 let color_selected = color_picker.value;
 
 window.addEventListener('load', (e) => {
@@ -71,7 +71,7 @@ color_picker.addEventListener('change', (e) => {
 // Get brush size elements
 const brush_size_decr_ele = document.querySelector('#decrease-brush-size');
 const brush_size_incr_ele = document.querySelector('#increase-brush-size');
-const brush_size_ele = document.querySelector('#brush-size');
+const brush_size_ele = document.querySelector('.brush-size');
 let brush_size = parseInt(brush_size_ele.value);
 
 // Decrease and display brush size
