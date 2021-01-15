@@ -14,30 +14,37 @@ let color_selected = color_picker.value;
 window.addEventListener('load', (e) => {
     let draw_flag = false;
 
+    // Set default width
     canvas.style.width ='100%';
     canvas.width  = canvas.offsetWidth;
     canvas.height = 500;
 
+    // Event listener functions
     const mousedown_event = (e) => {
         draw_flag = true;
         ctx.beginPath();
-        draw(e);
+        draw(e); // Draws a dot on mouse click down
     }
 
     const draw = (e) => {
+        // If mouse up, don't draw
         if(!draw_flag) { return; }
+
+        // Set stroke sizes and color
         ctx.strokeStyle = color_selected;
         ctx.lineWidth = brush_size;
         ctx.lineCap = 'round';
+
+        // Draw
         ctx.lineTo(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top);
         ctx.stroke();
     }
 
     const mouseup_event = () => {
-        draw_flag = false;
+        draw_flag = false; // Turn of flag
     }
 
-
+    // Add event listeners
     canvas.addEventListener('mousedown', mousedown_event);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', mouseup_event);
