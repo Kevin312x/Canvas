@@ -11,6 +11,9 @@ const ctx_memory = canvas_memory.getContext('2d');
 const color_picker = document.querySelector('.color-picker');
 let color_selected = color_picker.value;
 
+// Default marker to pen
+let marker = 'pen'; // Can be 'pen', 'eraser', or 'fill'
+
 window.addEventListener('load', (e) => {
     let draw_flag = false;
 
@@ -23,6 +26,13 @@ window.addEventListener('load', (e) => {
     const mousedown_event = (e) => {
         draw_flag = true;
         ctx.beginPath();
+
+        // Set stroke sizes and color
+        ctx.strokeStyle = color_selected;
+        ctx.lineWidth = brush_size;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
         draw(e); // Draws a dot on mouse click down
     }
 
@@ -30,14 +40,24 @@ window.addEventListener('load', (e) => {
         // If mouse up, don't draw
         if(!draw_flag) { return; }
 
-        // Set stroke sizes and color
-        ctx.strokeStyle = color_selected;
-        ctx.lineWidth = brush_size;
-        ctx.lineCap = 'round';
-
         // Draw
-        ctx.lineTo(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top);
-        ctx.stroke();
+        switch(marker) {
+            case 'pen':
+                ctx.lineTo(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top);
+                ctx.stroke();        
+                break;
+            case 'eraser':
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.arc(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top, ctx.lineWidth, 0, Math.PI*2, false);
+                ctx.fill();
+                break;
+                case 'fill':
+                break;
+            default:
+                ctx.lineTo(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top);
+                ctx.stroke();        
+                break;
+        }
     }
 
     const mouseup_event = () => {
@@ -138,3 +158,8 @@ const pickr = Pickr.create({
 pickr.on('change', (color, instance) => {
     color_selected = color.toHEXA().toString()
 });
+
+function marker_pen() { marker = 'pen'; }
+function marker_eraser() { marker = 'eraser'; }
+function marker_fill() { marker = 'fill'; }
+function clear_canvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
