@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/>
     <link rel="stylesheet" href="style.css">
     <title>Canvas</title>
 </head>
@@ -10,7 +11,7 @@
     <div class="container">
         <canvas class="canvas"></canvas>
         <div class="tools-row">
-            <input type="color" class="color-picker" value="#000000">
+            <div class="color-picker"></div>
             <div class="brush-size-group">
                 <button id="decrease-brush-size">-</button>
                 <input type="number" class="brush-size" value="10">
@@ -25,5 +26,6 @@
         </div>
     </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
 <script src="canvas.js"></script>
 </html>
