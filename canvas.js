@@ -52,10 +52,11 @@ window.addEventListener('load', (e) => {
                 ctx.fill();
                 break;
                 case 'fill':
+                    // Refer to http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
                 break;
             default:
-                ctx.lineTo(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top);
-                ctx.stroke();        
+                // Defaults to 'pen'
+                marker = 'pen';      
                 break;
         }
     }
