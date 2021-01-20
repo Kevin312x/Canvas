@@ -9,7 +9,7 @@ const ctx_memory = canvas_memory.getContext('2d');
 
 // Get element and hex value of color
 const color_picker = document.querySelector('.color-picker');
-let color_selected = color_picker.value;
+let color_selected = color_picker.value || '#000000';
 
 // Default marker to pen
 let marker = 'pen'; // Can be 'pen', 'eraser', or 'fill'
@@ -21,6 +21,7 @@ window.addEventListener('load', (e) => {
     canvas.style.width ='100%';
     canvas.width  = canvas.offsetWidth;
     canvas.height = 500;
+    // ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Event listener functions
     const mousedown_event = (e) => {
@@ -29,6 +30,7 @@ window.addEventListener('load', (e) => {
 
         // Set stroke sizes and color
         ctx.strokeStyle = color_selected;
+        console.log(color_selected)
         ctx.lineWidth = brush_size;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
@@ -47,9 +49,13 @@ window.addEventListener('load', (e) => {
                 ctx.stroke();        
                 break;
             case 'eraser':
-                ctx.globalCompositeOperation = 'destination-out';
-                ctx.arc(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top, ctx.lineWidth, 0, Math.PI*2, false);
-                ctx.fill();
+                // ctx.globalCompositeOperation = 'destination-out';
+                // ctx.moveTo(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top);
+                // ctx.arc(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top, ctx.lineWidth, 0, Math.PI*2, false);
+                // ctx.fill();
+                ctx.strokeStyle = 'white';
+                ctx.lineTo(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top);
+                ctx.stroke();  
                 break;
                 case 'fill':
                     // Refer to http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
