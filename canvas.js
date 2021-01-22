@@ -78,6 +78,7 @@ window.addEventListener('load', (e) => {
     canvas.addEventListener('mouseup', mouseup_event);
 });
 
+// Event Listener to modify canvas on resize
 window.addEventListener('resize', () => {
     // Save canvas state into canvas memory (dimensions and drawing) 
     canvas_memory.height = canvas.height;
@@ -163,11 +164,19 @@ const pickr = Pickr.create({
     }
 });
 
+// Event Listener to modify color_selected and color_rgba variables
 pickr.on('change', (color, instance) => {
     color_selected = color.toHEXA().toString();
     color_rgba = color.toRGBA().toString();
 });
 
+/**
+ * Checks and matches the rgba of the start_color and the pixel at image_data[position]
+ * @param image_data: array containing all the rgba of pixels on canvas
+ * @param position: position of pixel on image data
+ * @param start_color: rgba object
+ * @returns: True or False depending on whether the color at the position matches the start_color
+ */
 function match_start_color(image_data, position, start_color) {
     let current_color = {
         'r': image_data[position],
@@ -181,6 +190,13 @@ function match_start_color(image_data, position, start_color) {
             current_color.a === start_color.a)
 }
 
+/**
+ * Set the rgba at data[position] equal to color
+ * @param data: array containing all the rgba of pixels on canvas
+ * @param position: position of pixel on image data
+ * @param color: rgba object
+ * @returns: none
+ */
 function color_pixel(data, position, color) {
     let rgba = color.substring(5, color.length - 1).split(',').map(str => str.trim());
     data[position] = parseInt(rgba[0]) || 0;
@@ -189,10 +205,20 @@ function color_pixel(data, position, color) {
     data[position + 3] = parseInt(rgba[3]) * 255 || 255;
 }
 
+/**
+ * @param x_pos: X mouse position relative to canvas
+ * @param y_pos: Y mouse position relative to canvas
+ * @param color: Color to fill
+ * @returns: none
+ * Detects all surrounding similarly colored pixel at (x_pos, y_pos) and colors them with the given color
+ */
 function flood_fill(x_pos, y_pos, color) {
+    // Convert canvas to image data
     let img_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
     let data = img_data.data;
+    // Gets position of clicked pixel
     let position = (y_pos * canvas.width + x_pos) * 4;
+    // Get the RGBA of pixel
     const start_color = {
         'r': data[position],
         'g': data[position + 1],
@@ -200,6 +226,11 @@ function flood_fill(x_pos, y_pos, color) {
         'a': data[position + 3]
     }
 
+    /**
+     * Loop to color in matching pixels
+     * Color in from top to bottom while checking left and right columns for same colored pixels
+     * If so, position add to stack
+     */
     let pixel_stack = [[x_pos, y_pos]];
     while(pixel_stack.length) {
         let new_coordinates = pixel_stack.pop();
@@ -243,9 +274,11 @@ function flood_fill(x_pos, y_pos, color) {
         new_pos += canvas.width * 4;
         }
     }
+    // Put image data back onto canvas
     ctx.putImageData(img_data, 0, 0);
 }
 
+// On click functions to set marker
 function marker_pen() { marker = 'pen'; }
 function marker_eraser() { marker = 'eraser'; }
 function marker_fill() { marker = 'fill'; }
