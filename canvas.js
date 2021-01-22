@@ -10,6 +10,7 @@ const ctx_memory = canvas_memory.getContext('2d');
 // Get element and hex value of color
 const color_picker = document.querySelector('.color-picker');
 let color_selected = color_picker.value || '#000000';
+let color_rgba = 'rgba(0, 0, 0, 1)';
 
 // Default marker to pen
 let marker = 'pen'; // Can be 'pen', 'eraser', or 'fill'
@@ -30,7 +31,6 @@ window.addEventListener('load', (e) => {
 
         // Set stroke sizes and color
         ctx.strokeStyle = color_selected;
-        console.log(color_selected)
         ctx.lineWidth = brush_size;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
@@ -59,6 +59,7 @@ window.addEventListener('load', (e) => {
                 break;
                 case 'fill':
                     // Refer to http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
+                    flood_fill(Math.ceil(e.clientX - ctx_rect.left), Math.ceil(e.clientY - ctx_rect.top), color_rgba);
                 break;
             default:
                 // Defaults to 'pen'
@@ -163,8 +164,87 @@ const pickr = Pickr.create({
 });
 
 pickr.on('change', (color, instance) => {
-    color_selected = color.toHEXA().toString()
+    color_selected = color.toHEXA().toString();
+    color_rgba = color.toRGBA().toString();
 });
+
+function match_start_color(image_data, position, start_color) {
+    let current_color = {
+        'r': image_data[position],
+        'g': image_data[position + 1],
+        'b': image_data[position + 2],
+        'a': image_data[position + 3]
+    }
+    return (current_color.r === start_color.r && 
+            current_color.b === start_color.b && 
+            current_color.g === start_color.g && 
+            current_color.a === start_color.a)
+}
+
+function color_pixel(data, position, color) {
+    let rgba = color.substring(5, color.length - 1).split(',').map(str => str.trim());
+    data[position] = parseInt(rgba[0]) || 0;
+    data[position + 1] = parseInt(rgba[1]) || 0;
+    data[position + 2] = parseInt(rgba[2]) || 0;
+    data[position + 3] = parseInt(rgba[3]) * 255 || 255;
+}
+
+function flood_fill(x_pos, y_pos, color) {
+    let img_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let data = img_data.data;
+    let position = (y_pos * canvas.width + x_pos) * 4;
+    const start_color = {
+        'r': data[position],
+        'g': data[position + 1],
+        'b': data[position + 2],
+        'a': data[position + 3]
+    }
+
+    let pixel_stack = [[x_pos, y_pos]];
+    while(pixel_stack.length) {
+        let new_coordinates = pixel_stack.pop();
+        let x = new_coordinates[0];
+        let y = new_coordinates[1];
+
+        let new_pos = (y * canvas.width + x) * 4;
+        while((y-- >= 0) && match_start_color(data, new_pos, start_color)) {
+            new_pos -= canvas.width * 4;
+        }
+
+        ++y;
+        new_pos +=canvas.width * 4;
+        let reach_right = false;
+        let reach_left = false;
+
+        while((y++ < canvas.height-1) && match_start_color(data, new_pos, start_color)) {
+            color_pixel(data, new_pos, color);
+
+            if(x > 0) {
+                if(match_start_color(data, new_pos - 4, start_color)) {
+                    if(!reach_left) {
+                        pixel_stack.push([x - 1, y]);
+                        reach_left = true;
+                    }
+                } else if(reach_left) {
+                    reach_left = false;
+                }
+            }
+    
+            if(x < canvas.width - 1) {
+                if(match_start_color(data, new_pos + 4, start_color)) {
+                    if(!reach_right) {
+                        pixel_stack.push([x + 1, y]);
+                        reach_right = true;
+                    }
+                } else if(reach_right) {
+                    reach_right = false;
+                }
+            }
+        new_pos += canvas.width * 4;
+        }
+    }
+    ctx.putImageData(img_data, 0, 0);
+}
 
 function marker_pen() { marker = 'pen'; }
 function marker_eraser() { marker = 'eraser'; }
