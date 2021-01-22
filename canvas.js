@@ -278,6 +278,15 @@ function flood_fill(x_pos, y_pos, color) {
     ctx.putImageData(img_data, 0, 0);
 }
 
+// Switch active class on buttons when clicked
+const tool_buttons = document.querySelectorAll('.tools > button');
+tool_buttons.forEach((button) => {
+    button.addEventListener('click', (e) => {
+        document.querySelector('.tools > .active').classList.remove('active');
+        e.target.classList.add('active');
+    });
+});
+
 // On click functions to set marker
 function marker_pen() { marker = 'pen'; }
 function marker_eraser() { marker = 'eraser'; }
