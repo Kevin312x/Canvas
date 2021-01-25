@@ -25,7 +25,7 @@ window.addEventListener('load', (e) => {
     // ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Event listener functions
-    const mousedown_event = (e) => {
+    const mousedown_event = (event) => {
         draw_flag = true;
         ctx.beginPath();
 
@@ -35,17 +35,17 @@ window.addEventListener('load', (e) => {
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
-        draw(e); // Draws a dot on mouse click down
+        draw(event); // Draws a dot on mouse click down
     }
 
-    const draw = (e) => {
+    const draw = (event) => {
         // If mouse up, don't draw
         if(!draw_flag) { return; }
 
         // Draw
         switch(marker) {
             case 'pen':
-                ctx.lineTo(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top);
+                ctx.lineTo(event.clientX - ctx_rect.left, event.clientY - ctx_rect.top);
                 ctx.stroke();        
                 break;
             case 'eraser':
@@ -54,12 +54,12 @@ window.addEventListener('load', (e) => {
                 // ctx.arc(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top, ctx.lineWidth, 0, Math.PI*2, false);
                 // ctx.fill();
                 ctx.strokeStyle = 'white';
-                ctx.lineTo(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top);
+                ctx.lineTo(event.clientX - ctx_rect.left, event.clientY - ctx_rect.top);
                 ctx.stroke();  
                 break;
                 case 'fill':
                     // Refer to http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
-                    flood_fill(Math.ceil(e.clientX - ctx_rect.left), Math.ceil(e.clientY - ctx_rect.top), color_rgba);
+                    flood_fill(Math.ceil(event.clientX - ctx_rect.left), Math.ceil(event.clientY - ctx_rect.top), color_rgba);
                 break;
             default:
                 // Defaults to 'pen'
@@ -93,8 +93,8 @@ window.addEventListener('resize', () => {
     ctx_rect= ctx.canvas.getBoundingClientRect();
 });
 
-color_picker.addEventListener('change', (e) => {
-    color_selected = e.target.value;
+color_picker.addEventListener('change', (event) => {
+    color_selected = event.target.value;
 });
 
 // Get brush size elements
@@ -116,8 +116,8 @@ brush_size_incr_ele.addEventListener('click', () => {
 });
 
 // Modify brush size from display
-brush_size_ele.addEventListener('change', (e) => {
-    brush_size = e.target.value;
+brush_size_ele.addEventListener('change', (event) => {
+    brush_size = event.target.value;
 });
 
 // Simple example, see optional options for more configuration.
@@ -279,13 +279,18 @@ function flood_fill(x_pos, y_pos, color) {
 }
 
 // Switch active class on buttons when clicked
-const tool_buttons = document.querySelectorAll('.tools > button');
+const tool_buttons = document.querySelectorAll('.tools > button:not(:last-child)'); // Removes 'clear' button
 tool_buttons.forEach((button) => {
-    button.addEventListener('click', (e) => {
+    button.addEventListener('click', (event) => {
         document.querySelector('.tools > .active').classList.remove('active');
-        e.target.classList.add('active');
+        event.target.classList.add('active');
     });
 });
+
+// Simulate a button depression when clicking 'clear' button
+const clear_button = document.querySelector('.clear');
+clear_button.addEventListener('mousedown', (event) => { event.target.classList.add('active'); });
+clear_button.addEventListener('mouseup', (event) => { event.target.classList.remove('active'); });
 
 // On click functions to set marker
 function marker_pen() { marker = 'pen'; }
