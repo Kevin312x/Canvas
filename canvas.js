@@ -46,7 +46,7 @@ window.addEventListener('load', (e) => {
         switch(marker) {
             case 'pen':
                 ctx.lineTo(event.clientX - ctx_rect.left, event.clientY - ctx_rect.top);
-                ctx.stroke();        
+                ctx.stroke();
                 break;
             case 'eraser':
                 // ctx.globalCompositeOperation = 'destination-out';
@@ -55,7 +55,7 @@ window.addEventListener('load', (e) => {
                 // ctx.fill();
                 ctx.strokeStyle = 'white';
                 ctx.lineTo(event.clientX - ctx_rect.left, event.clientY - ctx_rect.top);
-                ctx.stroke();  
+                ctx.stroke();
                 break;
                 case 'fill':
                     // Refer to http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
@@ -63,7 +63,7 @@ window.addEventListener('load', (e) => {
                 break;
             default:
                 // Defaults to 'pen'
-                marker = 'pen';      
+                marker = 'pen';
                 break;
         }
     }
@@ -80,7 +80,7 @@ window.addEventListener('load', (e) => {
 
 // Event Listener to modify canvas on resize
 window.addEventListener('resize', () => {
-    // Save canvas state into canvas memory (dimensions and drawing) 
+    // Save canvas state into canvas memory (dimensions and drawing)
     canvas_memory.height = canvas.height;
     canvas_memory.width = canvas.width;
     ctx_memory.drawImage(canvas, 0, 0);
@@ -184,9 +184,9 @@ function match_start_color(image_data, position, start_color) {
         'b': image_data[position + 2],
         'a': image_data[position + 3]
     }
-    return (current_color.r === start_color.r && 
-            current_color.b === start_color.b && 
-            current_color.g === start_color.g && 
+    return (current_color.r === start_color.r &&
+            current_color.b === start_color.b &&
+            current_color.g === start_color.g &&
             current_color.a === start_color.a)
 }
 
@@ -260,7 +260,7 @@ function flood_fill(x_pos, y_pos, color) {
                     reach_left = false;
                 }
             }
-    
+
             if(x < canvas.width - 1) {
                 if(match_start_color(data, new_pos + 4, start_color)) {
                     if(!reach_right) {
@@ -284,6 +284,18 @@ tool_buttons.forEach((button) => {
     button.addEventListener('click', (event) => {
         document.querySelector('.tools > .active').classList.remove('active');
         event.target.classList.add('active');
+        canvas.classList = 'canvas';
+
+        if(event.target.classList.value.includes('pen')) {
+            marker = 'pen';
+            canvas.classList.add('pen-cursor');
+        } else if(event.target.classList.value.includes('eraser')) {
+            marker = 'eraser';
+            canvas.classList.add('eraser-cursor');
+        } else if(event.target.classList.value.includes('fill')) {
+            marker = 'fill';
+            canvas.classList.add('fill-cursor');
+        }
     });
 });
 
@@ -291,9 +303,5 @@ tool_buttons.forEach((button) => {
 const clear_button = document.querySelector('.clear');
 clear_button.addEventListener('mousedown', (event) => { event.target.classList.add('active'); });
 clear_button.addEventListener('mouseup', (event) => { event.target.classList.remove('active'); });
-
-// On click functions to set marker
-function marker_pen() { marker = 'pen'; }
-function marker_eraser() { marker = 'eraser'; }
-function marker_fill() { marker = 'fill'; }
+// Clears canvas
 function clear_canvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
