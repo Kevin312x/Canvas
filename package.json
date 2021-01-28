@@ -4,6 +4,7 @@
   "description": "",
   "main": "canvas.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Kevin312x/Canvas/issues"
   },
-  "homepage": "https://github.com/Kevin312x/Canvas#readme"
+  "homepage": "https://github.com/Kevin312x/Canvas#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
