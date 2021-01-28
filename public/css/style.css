@@ -92,11 +92,11 @@ footer {
  * Alternate method to change cursor by adding and removing classes
  */
 .pen-cursor {
-    cursor: url("public/images/mechanical-pen.png") 0 16, default;
+    cursor: url("../images/mechanical-pen.png") 0 16, default;
 }
 .eraser-cursor {
-    cursor: url("public/images/eraser.png") 0 16, default;
+    cursor: url("../images/eraser.png") 0 16, default;
 }
 .fill-cursor {
-    cursor: url("public/images/bucket.png") 0 16, default;
+    cursor: url("../images/bucket.png") 0 16, default;
 }

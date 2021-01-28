@@ -301,7 +301,7 @@ tool_buttons.forEach((button) => {
 
 // Simulate a button depression when clicking 'clear' button
 const clear_button = document.querySelector('.clear');
-clear_button.addEventListener('mousedown', (event) => { event.target.classList.add('active'); });
+clear_button.addEventListener('mousedown', (event) => { event.target.classList.add('active'); clear_canvas(); });
 clear_button.addEventListener('mouseup', (event) => { event.target.classList.remove('active'); });
 // Clears canvas
 function clear_canvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
