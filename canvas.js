@@ -1,3 +1,5 @@
+let socket = io();
+
 // Get canvas element and context
 const canvas = document.querySelector('.canvas');
 const ctx = canvas.getContext('2d');
@@ -14,6 +16,10 @@ let color_rgba = 'rgba(0, 0, 0, 1)';
 
 // Default marker to pen
 let marker = 'pen'; // Can be 'pen', 'eraser', or 'fill'
+
+socket.on('point', (data) => {
+    console.log(data)
+});
 
 window.addEventListener('load', (e) => {
     let draw_flag = false;
@@ -66,6 +72,13 @@ window.addEventListener('load', (e) => {
                 marker = 'pen';
                 break;
         }
+
+        socket.emit('draw', {
+            'x': event.clientX - ctx_rect.left, 
+            'y': event.clientY - ctx_rect.top, 
+            'marker': marker,
+            'size': brush_size
+        });
     }
 
     const mouseup_event = () => {
