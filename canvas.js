@@ -21,7 +21,7 @@ window.addEventListener('load', (e) => {
 
     // Socket event listeners
     socket.on('begin_path', () => { ctx.beginPath(); }); // On mousedown. begin path
-    socket.on('point', (data)  => { draw(null, data.x, data.y, data.marker, data.color, data.size); }); // On mousemove, start drawing
+    socket.on('point', (data)  => { draw(null, data.x, data.y, data.marker, data.color, data.size, data.rgba); }); // On mousemove, start drawing
 
     // Set default width
     canvas.style.width ='100%';
@@ -50,7 +50,8 @@ window.addEventListener('load', (e) => {
             'y'     : event.clientY - ctx_rect.top, 
             'size'  : brush_size,
             'color' : color_selected,
-            'marker': marker
+            'marker': marker,
+            'rgba'  : color_rgba
         });
     }
 
@@ -59,7 +60,7 @@ window.addEventListener('load', (e) => {
     }
 
     // Draw
-    const draw = (event, x = null, y = null, marker_tool = marker, color = color_selected, size = brush_size) => {
+    const draw = (event, x = null, y = null, marker_tool = marker, color = color_selected, size = brush_size, rgba = color_rgba) => {
         let mouse_x     = x || event.clientX - ctx_rect.left;
         let mouse_y     = y || event.clientY - ctx_rect.top;
         ctx.lineWidth   = size;
@@ -77,7 +78,7 @@ window.addEventListener('load', (e) => {
                 break;
                 case 'fill':
                     // Refer to http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
-                    flood_fill(Math.ceil(mouse_x), Math.ceil(mouse_y), color_rgba);
+                    flood_fill(Math.ceil(mouse_x), Math.ceil(mouse_y), rgba);
                 break;
             default:
                 // Defaults to 'pen'
