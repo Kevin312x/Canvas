@@ -1,93 +1,94 @@
-let socket = io();
-
 // Get canvas element and context
 const canvas = document.querySelector('.canvas');
-const ctx = canvas.getContext('2d');
-let ctx_rect= ctx.canvas.getBoundingClientRect();
+const ctx    = canvas.getContext('2d');
+let ctx_rect = ctx.canvas.getBoundingClientRect();
 
 // Create a dummy canvas to save canvas state
 const canvas_memory = document.createElement('canvas');
-const ctx_memory = canvas_memory.getContext('2d');
+const ctx_memory    = canvas_memory.getContext('2d');
 
 // Get element and hex value of color
 const color_picker = document.querySelector('.color-picker');
 let color_selected = color_picker.value || '#000000';
-let color_rgba = 'rgba(0, 0, 0, 1)';
+let color_rgba     = 'rgba(0, 0, 0, 1)';
 
 // Default marker to pen
 let marker = 'pen'; // Can be 'pen', 'eraser', or 'fill'
 
-socket.on('point', (data) => {
-    console.log(data)
-});
-
 window.addEventListener('load', (e) => {
+    const socket  = io();
     let draw_flag = false;
+
+    // Socket event listeners
+    socket.on('begin_path', () => { ctx.beginPath(); }); // On mousedown. begin path
+    socket.on('point', (data)  => { draw(null, data.x, data.y, data.marker, data.color, data.size); }); // On mousemove, start drawing
 
     // Set default width
     canvas.style.width ='100%';
-    canvas.width  = canvas.offsetWidth;
-    canvas.height = 500;
-    // ctx.fillRect(0, 0, canvas.width, canvas.height);
+    canvas.width       = canvas.offsetWidth;
+    canvas.height      = 500;
 
     // Event listener functions
     const mousedown_event = (event) => {
-        draw_flag = true;
         ctx.beginPath();
+        draw_flag = true;
 
-        // Set stroke sizes and color
-        ctx.strokeStyle = color_selected;
-        ctx.lineWidth = brush_size;
-        ctx.lineCap = 'round';
+        // Set line info
         ctx.lineJoin = 'round';
+        ctx.lineCap  = 'round';
 
-        draw(event); // Draws a dot on mouse click down
+        socket.emit('open');
+        mousemove_event(event); // Draws a dot on mouse click down
     }
 
-    const draw = (event) => {
+    const mousemove_event = (event) => {
         // If mouse up, don't draw
         if(!draw_flag) { return; }
+        draw(event);
+        socket.emit('draw', {
+            'x'     : event.clientX - ctx_rect.left, 
+            'y'     : event.clientY - ctx_rect.top, 
+            'size'  : brush_size,
+            'color' : color_selected,
+            'marker': marker
+        });
+    }
 
-        // Draw
-        switch(marker) {
+    const mouseup_event = () => {
+        draw_flag = false; // Turn off flag
+    }
+
+    // Draw
+    const draw = (event, x = null, y = null, marker_tool = marker, color = color_selected, size = brush_size) => {
+        let mouse_x     = x || event.clientX - ctx_rect.left;
+        let mouse_y     = y || event.clientY - ctx_rect.top;
+        ctx.lineWidth   = size;
+        ctx.strokeStyle = color;
+
+        switch(marker_tool) {
             case 'pen':
-                ctx.lineTo(event.clientX - ctx_rect.left, event.clientY - ctx_rect.top);
+                ctx.lineTo(mouse_x, mouse_y);
                 ctx.stroke();
                 break;
             case 'eraser':
-                // ctx.globalCompositeOperation = 'destination-out';
-                // ctx.moveTo(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top);
-                // ctx.arc(e.clientX - ctx_rect.left, e.clientY - ctx_rect.top, ctx.lineWidth, 0, Math.PI*2, false);
-                // ctx.fill();
                 ctx.strokeStyle = 'white';
-                ctx.lineTo(event.clientX - ctx_rect.left, event.clientY - ctx_rect.top);
+                ctx.lineTo(mouse_x, mouse_y);
                 ctx.stroke();
                 break;
                 case 'fill':
                     // Refer to http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
-                    flood_fill(Math.ceil(event.clientX - ctx_rect.left), Math.ceil(event.clientY - ctx_rect.top), color_rgba);
+                    flood_fill(Math.ceil(mouse_x), Math.ceil(mouse_y), color_rgba);
                 break;
             default:
                 // Defaults to 'pen'
                 marker = 'pen';
                 break;
         }
-
-        socket.emit('draw', {
-            'x': event.clientX - ctx_rect.left, 
-            'y': event.clientY - ctx_rect.top, 
-            'marker': marker,
-            'size': brush_size
-        });
-    }
-
-    const mouseup_event = () => {
-        draw_flag = false; // Turn of flag
     }
 
     // Add event listeners
     canvas.addEventListener('mousedown', mousedown_event);
-    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mousemove', mousemove_event);
     canvas.addEventListener('mouseup', mouseup_event);
 });
 

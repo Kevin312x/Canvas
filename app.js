@@ -25,4 +25,8 @@ io.on('connection', (socket) => {
     socket.on('draw', (data) => {
        socket.broadcast.emit('point', data);
     });
+
+    socket.on('open', () => {
+        socket.broadcast.emit('begin_path');
+    })
 });
