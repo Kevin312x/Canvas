@@ -14,9 +14,17 @@ http.listen(PORT, () => {
     console.log(`Server listening at port ${PORT}`);
 });
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
     console.log(`Client: ${socket.id} connected to the server`);
-    // socket.client.conn.server.clientsCount -> current number of connections
+
+    let all_socket_id = await io.allSockets();
+    all_socket_id.delete(socket.id);
+    
+    let first_socket_id = all_socket_id.values().next().value;
+
+    if(all_socket_id.size > 0) {
+        io.to(first_socket_id).emit('req_img_data', {'sender_id': socket.id});
+    }
 
     socket.on('disconnect', () => {
         console.log(`Client: ${socket.id} disconnected from the server`);
