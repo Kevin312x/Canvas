@@ -23,8 +23,12 @@ io.on('connection', async (socket) => {
     let first_socket_id = all_socket_id.values().next().value;
 
     if(all_socket_id.size > 0) {
-        io.to(first_socket_id).emit('req_img_data', {'sender_id': socket.id});
+        io.to(first_socket_id).emit('req_canvas', {'sender_id': socket.id});
     }
+
+    socket.on('canvas_obj', (data) => {
+        io.to(data.target_id).emit('res_canvas', {'canvas': data.canvas});
+    });
 
     socket.on('disconnect', () => {
         console.log(`Client: ${socket.id} disconnected from the server`);
