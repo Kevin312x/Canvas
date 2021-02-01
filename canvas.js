@@ -20,7 +20,7 @@ window.addEventListener('load', (e) => {
     // Socket event listeners
     socket.on('begin_path', () => { ctx.beginPath(); }); // On mousedown. begin path
     socket.on('point', (data)  => { draw(null, data.x, data.y, data.marker, data.color, data.size, data.rgba); }); // On mousemove, start drawing
-    socket.on('req_canvas', (data) => { socket.emit('canvas_obj', {'canvas': document.querySelector('.canvas').toDataURL(), 'target_id': data.sender_id}); });
+    socket.on('req_canvas', (data) => { socket.emit('canvas_obj', {'canvas': canvas.toDataURL(), 'target_id': data.sender_id}); });
     socket.on('res_canvas', (data) => {
         let image = new Image();
         image.onload = () => { ctx.drawImage(image, 0, 0); }
