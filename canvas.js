@@ -118,10 +118,6 @@ window.addEventListener('resize', () => {
     ctx_rect= ctx.canvas.getBoundingClientRect();
 });
 
-color_picker.addEventListener('change', (event) => {
-    color_selected = event.target.value;
-});
-
 // Get brush size elements
 const brush_size_decr_ele = document.querySelector('#decrease-brush-size');
 const brush_size_incr_ele = document.querySelector('#increase-brush-size');
