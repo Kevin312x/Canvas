@@ -19,26 +19,11 @@ io.on('connection', async (socket) => {
 
     let all_socket_id = await io.allSockets();
     all_socket_id.delete(socket.id);
-    
-    let first_socket_id = all_socket_id.values().next().value;
+    let first_socket_id = all_socket_id.values().next().value;    
 
-    if(all_socket_id.size > 0) {
-        io.to(first_socket_id).emit('req_canvas', {'sender_id': socket.id});
-    }
-
-    socket.on('canvas_obj', (data) => {
-        io.to(data.target_id).emit('res_canvas', {'canvas': data.canvas});
-    });
-
-    socket.on('disconnect', () => {
-        console.log(`Client: ${socket.id} disconnected from the server`);
-    });
-
-    socket.on('draw', (data) => {
-       socket.broadcast.emit('point', data);
-    });
-
-    socket.on('open', () => {
-        socket.broadcast.emit('begin_path');
-    })
+    if(all_socket_id.size > 0) { io.to(first_socket_id).emit('req_canvas', {'sender_id': socket.id}); }
+    socket.on('canvas_obj', (data) => { io.to(data.target_id).emit('res_canvas', {'canvas': data.canvas}); });
+    socket.on('disconnect', () => { console.log(`Client: ${socket.id} disconnected from the server`); });
+    socket.on('draw', (data) => { socket.broadcast.emit('point', data); });
+    socket.on('start', () => { socket.broadcast.emit('begin_path'); });
 });

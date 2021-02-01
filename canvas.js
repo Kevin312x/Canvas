@@ -17,21 +17,18 @@ let marker = 'pen'; // Can be 'pen', 'eraser', or 'fill'
 
 window.addEventListener('load', (e) => {
     const socket  = io();
-    let draw_flag = false;
-
     // Socket event listeners
     socket.on('begin_path', () => { ctx.beginPath(); }); // On mousedown. begin path
     socket.on('point', (data)  => { draw(null, data.x, data.y, data.marker, data.color, data.size, data.rgba); }); // On mousemove, start drawing
-    socket.on('req_canvas', (data) => {
-        socket.emit('canvas_obj', {'canvas': document.querySelector('.canvas').toDataURL(), 'target_id': data.sender_id})
-    });
+    socket.on('req_canvas', (data) => { socket.emit('canvas_obj', {'canvas': document.querySelector('.canvas').toDataURL(), 'target_id': data.sender_id}); });
     socket.on('res_canvas', (data) => {
         let image = new Image();
-        image.onload = () => {
-            ctx.drawImage(image, 0, 0);
-        }
+        image.onload = () => { ctx.drawImage(image, 0, 0); }
         image.src = data.canvas;
-    })
+    });
+
+
+    let draw_flag = false;
 
     // Set default width
     canvas.style.width ='100%';
@@ -42,12 +39,7 @@ window.addEventListener('load', (e) => {
     const mousedown_event = (event) => {
         ctx.beginPath();
         draw_flag = true;
-
-        // Set line info
-        ctx.lineJoin = 'round';
-        ctx.lineCap  = 'round';
-
-        socket.emit('open');
+        socket.emit('start');
         mousemove_event(event); // Draws a dot on mouse click down
     }
 
@@ -73,8 +65,12 @@ window.addEventListener('load', (e) => {
     const draw = (event, x = null, y = null, marker_tool = marker, color = color_selected, size = brush_size, rgba = color_rgba) => {
         let mouse_x     = x || event.clientX - ctx_rect.left;
         let mouse_y     = y || event.clientY - ctx_rect.top;
+
+        // Set line info
         ctx.lineWidth   = size;
         ctx.strokeStyle = color;
+        ctx.lineJoin = 'round';
+        ctx.lineCap  = 'round';
 
         switch(marker_tool) {
             case 'pen':
