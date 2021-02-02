@@ -9,19 +9,31 @@
 </head>
 <body>
     <div class="container">
-        <canvas class="canvas pen-cursor"></canvas>
-        <div class="tools-row">
-            <div class="color-picker"></div>
-            <div class="brush-size-group">
-                <button id="decrease-brush-size">-</button>
-                <input type="number" class="brush-size" value="10">
-                <button id="increase-brush-size">+</button>
+        <div class="row">
+            <div class="canvas-col">
+                <canvas class="canvas pen-cursor"></canvas>
+                <div class="tools-row">
+                    <div class="color-picker"></div>
+                    <div class="brush-size-group">
+                        <button id="decrease-brush-size">-</button>
+                        <input type="number" class="brush-size" value="10">
+                        <button id="increase-brush-size">+</button>
+                    </div>
+                    <div class="tools">
+                        <button class="pen active">Pen</button>
+                        <button class="eraser">Eraser</button>
+                        <button class="fill">Fill</button>
+                        <button class="clear">Clear</button>
+                    </div>
+                </div>
             </div>
-            <div class="tools">
-                <button class="pen active">Pen</button>
-                <button class="eraser">Eraser</button>
-                <button class="fill">Fill</button>
-                <button class="clear">Clear</button>
+            <div class="chat-col">
+                <div class="chat-box">
+                    <ul class="messages"></ul>
+                </div>
+                <form class="message-form" action="">
+                    <input class="input"><button>Send</button>
+                </form>
             </div>
         </div>
     </div>

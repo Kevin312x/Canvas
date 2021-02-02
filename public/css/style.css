@@ -16,12 +16,45 @@ input[type=number] {
 }
 
 .container {
-    width: 70%;
+    width: 85%;
     margin: 2rem auto;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.chat-col {
+    width: 50vh;
+    height: 45vh;
+    border: 2px solid black;
+}
+
+.chat-box {
+    height: 100%;
+    width: 100%;
+}
+
+.message-form {
+    display: flex;
+    bottom: 0;
+}
+
+.input {
+    flex-grow: 1;
+}
+
+.input:focus {
+    outline: none;
 }
 
 .canvas {
     border: 2px solid black;
+}
+
+.canvas-col {
+    width: 65%;
 }
 
 .tools-row {
