@@ -39,6 +39,7 @@ input[type=number] {
 .message-form {
     display: flex;
     bottom: 0;
+    transform: translateY(-100%);
 }
 
 .input {
