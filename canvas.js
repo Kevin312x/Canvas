@@ -335,8 +335,7 @@ send_btn.addEventListener('click', (event) => {
 
 socket.on('rec_msg', (data) => {
     const msg = document.createElement('li');
-    msg.innerHTML = data.msg;
+    msg.innerHTML = `${data.sender}: ${data.msg}`;
     messages.appendChild(msg);
     messages.scrollIntoView(false);
-
-})
+});

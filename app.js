@@ -26,5 +26,5 @@ io.on('connection', async (socket) => {
     socket.on('disconnect', () => { console.log(`Client: ${socket.id} disconnected from the server`); });
     socket.on('draw', (data) => { socket.broadcast.emit('point', data); });
     socket.on('start', () => { socket.broadcast.emit('begin_path'); });
-    socket.on('send_msg', (data) => { io.emit('rec_msg', {'msg': data.msg}) });
+    socket.on('send_msg', (data) => { io.emit('rec_msg', {'msg': data.msg, 'sender': socket.id}) });
 });
