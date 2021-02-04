@@ -26,27 +26,64 @@ input[type=number] {
 }
 
 .chat-col {
-    width: 50vh;
-    height: 45vh;
+    height: 300px;
+    width: 350px;
     border: 2px solid black;
 }
 
 .chat-box {
-    height: 100%;
-    width: 100%;
+    overflow-y: hidden;
+    overflow: scroll;
+    height: 280px;
+    width: 350px;
 }
+
+.chat-box::-webkit-scrollbar {
+    width: 10px;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, .1);
+}
+
+.messages .message-contents {
+    height: min-content;
+    padding: 5px 10px;
+    margin: 5px 3px;
+    border-radius: 15px;
+    font-size: 15px;
+}
+
+.messages > li {
+    list-style: none;
+    padding: 5px 8px;
+    margin: 2px 3px;
+    font-size: 15px;
+}
+
+/* .messages > .friend-message > .message-contents {
+    text-align: left;
+    background-color: teal;
+    color: black;
+}
+
+.messages > .user-message > .message-contents {
+    text-align: right;
+    background-color: blueviolet;
+    color: black;
+} */
 
 .message-form {
     display: flex;
     bottom: 0;
-    transform: translateY(-100%);
 }
 
-.input {
+.msg-input {
     flex-grow: 1;
 }
 
-.input:focus {
+.msg-input:focus {
     outline: none;
 }
 

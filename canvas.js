@@ -14,9 +14,9 @@ let color_rgba     = 'rgba(0, 0, 0, 1)';
 
 // Default marker to pen
 let marker = 'pen'; // Can be 'pen', 'eraser', or 'fill'
+const socket  = io();
 
 window.addEventListener('load', (e) => {
-    const socket  = io();
     // Socket event listeners
     socket.on('begin_path', () => { ctx.beginPath(); }); // On mousedown. begin path
     socket.on('point', (data)  => { draw(null, data.x, data.y, data.marker, data.color, data.size, data.rgba); }); // On mousemove, start drawing
@@ -322,3 +322,21 @@ clear_button.addEventListener('mousedown', (event) => { event.target.classList.a
 clear_button.addEventListener('mouseup', (event) => { event.target.classList.remove('active'); });
 // Clears canvas
 function clear_canvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+const send_btn   = document.querySelector('.send-msg');
+const messages   = document.querySelector('.messages');
+const input_msg  = document.querySelector('.msg-input');
+
+
+send_btn.addEventListener('click', (event) => {
+    socket.emit('send_msg', {'msg': input_msg.value});
+    input_msg.value = '';
+});
+
+socket.on('rec_msg', (data) => {
+    const msg = document.createElement('li');
+    msg.innerHTML = data.msg;
+    messages.appendChild(msg);
+    messages.scrollIntoView(false);
+
+})
