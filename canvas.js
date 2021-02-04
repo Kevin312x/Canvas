@@ -20,11 +20,30 @@ window.addEventListener('load', (e) => {
     // Socket event listeners
     socket.on('begin_path', () => { ctx.beginPath(); }); // On mousedown. begin path
     socket.on('point', (data)  => { draw(null, data.x, data.y, data.marker, data.color, data.size, data.rgba); }); // On mousemove, start drawing
-    socket.on('req_canvas', (data) => { socket.emit('canvas_obj', {'canvas': canvas.toDataURL(), 'target_id': data.sender_id}); });
-    socket.on('res_canvas', (data) => {
+    socket.on('req_data', (data) => { 
+        let all_messages = [];
+        document.querySelectorAll('.messages > li').forEach(message => {
+            all_messages.push(message.innerHTML);
+        });
+
+        socket.emit('data', 
+        {
+            'canvas': canvas.toDataURL(), 
+            'messages': all_messages, 
+            'target_id': data.sender_id}); 
+        }
+    );
+    socket.on('res_data', (data) => {
         let image = new Image();
         image.onload = () => { ctx.drawImage(image, 0, 0); }
         image.src = data.canvas;
+
+        data.messages.forEach(message => {
+            const msg = document.createElement('li');
+            msg.innerHTML = message;
+            messages.appendChild(msg);
+            messages.scrollIntoView(false);
+        })
     });
 
 
