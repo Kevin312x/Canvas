@@ -7,116 +7,113 @@ let ctx_rect = ctx.canvas.getBoundingClientRect();
 const canvas_memory = document.createElement('canvas');
 const ctx_memory    = canvas_memory.getContext('2d');
 
-// Get element and hex value of color
-const color_picker = document.querySelector('.color-picker');
-let color_selected = color_picker.value || '#000000';
-let color_rgba     = 'rgba(0, 0, 0, 1)';
+const socket  = io();
+// Socket event listeners
+socket.on('begin_path', () => { ctx.beginPath(); }); // On mousedown. begin path
+socket.on('point', (data)  => { draw(null, data.x, data.y, data.marker, data.color, data.size, data.rgba); }); // On mousemove, start drawing
+socket.on('req_data', (data) => { // Sends canvas image and array of messages
+    let all_messages = [];
+    document.querySelectorAll('.messages > li').forEach(message => {
+        all_messages.push(message.innerHTML);
+    });
+
+    socket.emit('data', 
+    {
+        'canvas': canvas.toDataURL(), 
+        'messages': all_messages, 
+        'target_id': data.sender_id}); 
+    }
+);
+socket.on('res_data', (data) => { // Loads image onto canvas and inserts messages into chatbox
+    let image = new Image();
+    image.onload = () => { ctx.drawImage(image, 0, 0); }
+    image.src = data.canvas;
+
+    data.messages.forEach(message => {
+        const msg = document.createElement('li');
+        msg.innerHTML = message;
+        messages.appendChild(msg);
+        messages.scrollIntoView(false);
+    })
+});
+socket.on('rec_msg', (data) => { // Insert received message into chatbox
+    const msg = document.createElement('li');
+    msg.innerHTML = `${data.sender}: ${data.msg}`;
+    messages.appendChild(msg);
+    messages.scrollIntoView(false);
+});
 
 // Default marker to pen
 let marker = 'pen'; // Can be 'pen', 'eraser', or 'fill'
-const socket  = io();
+let draw_flag = false;
 
-window.addEventListener('load', (e) => {
-    // Socket event listeners
-    socket.on('begin_path', () => { ctx.beginPath(); }); // On mousedown. begin path
-    socket.on('point', (data)  => { draw(null, data.x, data.y, data.marker, data.color, data.size, data.rgba); }); // On mousemove, start drawing
-    socket.on('req_data', (data) => { 
-        let all_messages = [];
-        document.querySelectorAll('.messages > li').forEach(message => {
-            all_messages.push(message.innerHTML);
-        });
+// Set default width
+canvas.style.width ='100%';
+canvas.width       = canvas.offsetWidth;
+canvas.height      = 500;
 
-        socket.emit('data', 
-        {
-            'canvas': canvas.toDataURL(), 
-            'messages': all_messages, 
-            'target_id': data.sender_id}); 
-        }
-    );
-    socket.on('res_data', (data) => {
-        let image = new Image();
-        image.onload = () => { ctx.drawImage(image, 0, 0); }
-        image.src = data.canvas;
+// Event listener functions
+const mousedown_event = (event) => {
+    ctx.beginPath();
+    draw_flag = true;
+    socket.emit('start');
+    mousemove_event(event); // Draws a dot on mouse click down
+}
 
-        data.messages.forEach(message => {
-            const msg = document.createElement('li');
-            msg.innerHTML = message;
-            messages.appendChild(msg);
-            messages.scrollIntoView(false);
-        })
+const mousemove_event = (event) => {
+    // If mouse up, don't draw
+    if(!draw_flag) { return; }
+    draw(event);
+    socket.emit('draw', {
+        'x'     : event.clientX - ctx_rect.left, 
+        'y'     : event.clientY - ctx_rect.top, 
+        'size'  : brush_size,
+        'color' : color_selected,
+        'marker': marker,
+        'rgba'  : color_rgba
     });
+}
 
+const mouseup_event = () => {
+    draw_flag = false; // Turn off flag
+}
 
-    let draw_flag = false;
+// Draw
+const draw = (event, x = null, y = null, marker_tool = marker, color = color_selected, size = brush_size, rgba = color_rgba) => {
+    let mouse_x     = x || event.clientX - ctx_rect.left;
+    let mouse_y     = y || event.clientY - ctx_rect.top;
 
-    // Set default width
-    canvas.style.width ='100%';
-    canvas.width       = canvas.offsetWidth;
-    canvas.height      = 500;
+    // Set line info
+    ctx.lineWidth   = size;
+    ctx.strokeStyle = color;
+    ctx.lineJoin = 'round';
+    ctx.lineCap  = 'round';
 
-    // Event listener functions
-    const mousedown_event = (event) => {
-        ctx.beginPath();
-        draw_flag = true;
-        socket.emit('start');
-        mousemove_event(event); // Draws a dot on mouse click down
+    switch(marker_tool) {
+        case 'pen':
+            ctx.lineTo(mouse_x, mouse_y);
+            ctx.stroke();
+            break;
+        case 'eraser':
+            ctx.strokeStyle = 'white';
+            ctx.lineTo(mouse_x, mouse_y);
+            ctx.stroke();
+            break;
+            case 'fill':
+                // Refer to http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
+                flood_fill(Math.ceil(mouse_x), Math.ceil(mouse_y), rgba);
+            break;
+        default:
+            // Defaults to 'pen'
+            marker = 'pen';
+            break;
     }
+}
 
-    const mousemove_event = (event) => {
-        // If mouse up, don't draw
-        if(!draw_flag) { return; }
-        draw(event);
-        socket.emit('draw', {
-            'x'     : event.clientX - ctx_rect.left, 
-            'y'     : event.clientY - ctx_rect.top, 
-            'size'  : brush_size,
-            'color' : color_selected,
-            'marker': marker,
-            'rgba'  : color_rgba
-        });
-    }
-
-    const mouseup_event = () => {
-        draw_flag = false; // Turn off flag
-    }
-
-    // Draw
-    const draw = (event, x = null, y = null, marker_tool = marker, color = color_selected, size = brush_size, rgba = color_rgba) => {
-        let mouse_x     = x || event.clientX - ctx_rect.left;
-        let mouse_y     = y || event.clientY - ctx_rect.top;
-
-        // Set line info
-        ctx.lineWidth   = size;
-        ctx.strokeStyle = color;
-        ctx.lineJoin = 'round';
-        ctx.lineCap  = 'round';
-
-        switch(marker_tool) {
-            case 'pen':
-                ctx.lineTo(mouse_x, mouse_y);
-                ctx.stroke();
-                break;
-            case 'eraser':
-                ctx.strokeStyle = 'white';
-                ctx.lineTo(mouse_x, mouse_y);
-                ctx.stroke();
-                break;
-                case 'fill':
-                    // Refer to http://www.williammalone.com/articles/html5-canvas-javascript-paint-bucket-tool/
-                    flood_fill(Math.ceil(mouse_x), Math.ceil(mouse_y), rgba);
-                break;
-            default:
-                // Defaults to 'pen'
-                marker = 'pen';
-                break;
-        }
-    }
-
-    // Add event listeners
-    canvas.addEventListener('mousedown', mousedown_event);
-    canvas.addEventListener('mousemove', mousemove_event);
-    canvas.addEventListener('mouseup', mouseup_event);
-});
+// Add event listeners
+canvas.addEventListener('mousedown', mousedown_event);
+canvas.addEventListener('mousemove', mousemove_event);
+canvas.addEventListener('mouseup', mouseup_event);
 
 // Event Listener to modify canvas on resize
 window.addEventListener('resize', () => {
@@ -155,6 +152,11 @@ brush_size_incr_ele.addEventListener('click', () => {
 brush_size_ele.addEventListener('change', (event) => {
     brush_size = event.target.value;
 });
+
+// Get element and hex value of color
+const color_picker = document.querySelector('.color-picker');
+let color_selected = color_picker.value || '#000000';
+let color_rgba     = 'rgba(0, 0, 0, 1)';
 
 // Simple example, see optional options for more configuration.
 const pickr = Pickr.create({
@@ -346,15 +348,7 @@ const send_btn   = document.querySelector('.send-msg');
 const messages   = document.querySelector('.messages');
 const input_msg  = document.querySelector('.msg-input');
 
-
 send_btn.addEventListener('click', (event) => {
     socket.emit('send_msg', {'msg': input_msg.value});
     input_msg.value = '';
-});
-
-socket.on('rec_msg', (data) => {
-    const msg = document.createElement('li');
-    msg.innerHTML = `${data.sender}: ${data.msg}`;
-    messages.appendChild(msg);
-    messages.scrollIntoView(false);
 });
