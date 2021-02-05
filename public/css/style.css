@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
 * {
     margin: 0;
     padding: 0;
+    font-family: 'Open Sans', sans-serif;
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -158,4 +161,18 @@ footer {
 }
 .fill-cursor {
     cursor: url("../images/bucket.png") 0 16, default;
+}
+
+.prompt {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.prompt h3 {
+    text-align: center;
+    font-size: 26px;
+}
+
+#room {
+    display: none;
 }
