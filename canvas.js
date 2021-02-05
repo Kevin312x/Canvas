@@ -38,7 +38,7 @@ socket.on('res_data', (data) => { // Loads image onto canvas and inserts message
 });
 socket.on('rec_msg', (data) => { // Insert received message into chatbox
     const msg = document.createElement('li');
-    msg.innerHTML = `${data.sender}: ${data.msg}`;
+    msg.innerHTML = `<b>${data.sender}</b>: ${data.msg}`;
     messages.appendChild(msg);
     messages.scrollIntoView(false);
 });

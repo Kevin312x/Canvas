@@ -32,8 +32,8 @@ input[type=number] {
 }
 
 .chat-box {
-    overflow-y: hidden;
-    overflow: scroll;
+    overflow: hidden;
+    overflow-y: scroll;
     height: 280px;
     width: 350px;
 }
@@ -57,22 +57,10 @@ input[type=number] {
 
 .messages > li {
     list-style: none;
-    padding: 5px 8px;
+    padding: 0 8px;
     margin: 2px 3px;
     font-size: 15px;
 }
-
-/* .messages > .friend-message > .message-contents {
-    text-align: left;
-    background-color: teal;
-    color: black;
-}
-
-.messages > .user-message > .message-contents {
-    text-align: right;
-    background-color: blueviolet;
-    color: black;
-} */
 
 .message-form {
     display: flex;
