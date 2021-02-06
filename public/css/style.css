@@ -179,10 +179,6 @@ footer {
     font-size: 26px;
 }
 
-#room {
-    display: none;
-}
-
 .form {
     border: 2px solid black;
     border-radius: 15px;
