@@ -169,9 +169,11 @@ footer {
 
 .prompt {
     width: 50%;
-    height: 100%;
+    height: min-content;
     margin: 0 auto;
-    margin-top: 5%
+    margin-top: 5%;
+    background: #ffffff;
+    border-radius: 15px;
 }
 
 .prompt h3 {
@@ -211,4 +213,16 @@ footer {
 .form label h3 {
     margin: 0 auto;
     margin-bottom: 1rem;;
+}
+
+.bg-dark {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, .8);
+}
+
+.submit-username {
+    padding: 1px 3px;
+    margin-left: auto;
 }

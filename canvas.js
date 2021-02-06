@@ -42,6 +42,13 @@ socket.on('rec_msg', (data) => { // Insert received message into chatbox
     messages.appendChild(msg);
     messages.scrollIntoView(false);
 });
+socket.on('server_msg', (data) => {
+    const msg = document.createElement('li');
+    msg.innerHTML = `<b>${data.message}</b>`;
+    msg.style.color = 'red';
+    messages.appendChild(msg);
+    messages.scrollIntoView(false);
+})
 
 // Default marker to pen
 let marker = 'pen'; // Can be 'pen', 'eraser', or 'fill'
@@ -353,8 +360,10 @@ send_btn.addEventListener('click', (event) => {
     input_msg.value = '';
 });
 
-const usrname_btn = document.querySelector('.submit-username');
+const usrname_btn   = document.querySelector('.submit-username');
+const usrname_input = document.querySelector('.username')
 usrname_btn.addEventListener('click', () => {
-    document.querySelector('.prompt').style.display = 'none';
+    socket.emit('set_username', {'username': usrname_input.value});
+    document.querySelector('.bg-dark').style.display = 'none';
     document.querySelector('#room').style.display = 'flex';
 });
