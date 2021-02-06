@@ -10,7 +10,7 @@
 <body>
     <div class="container">
         <div class="prompt">
-            <form method="POST" action="/submit" class="form">
+            <form onsubmit="return false;" class="form">
                 <label><h3>Enter Username</h3></label>
                 <div class="row">
                     <input type='text' placeholder='Username' name='username'>
@@ -20,6 +20,39 @@
                 </div>
             </form>
         </div>
+        <div class="row" id="room">
+            <div class="canvas-col">
+                <canvas class="canvas pen-cursor"></canvas>
+                <div class="tools-row">
+                    <div class="color-picker"></div>
+                    <div class="brush-size-group">
+                        <button id="decrease-brush-size">-</button>
+                        <input type="number" class="brush-size" value="10">
+                        <button id="increase-brush-size">+</button>
+                    </div>
+                    <div class="tools">
+                        <button class="pen active">Pen</button>
+                        <button class="eraser">Eraser</button>
+                        <button class="fill">Fill</button>
+                        <button class="clear">Clear</button>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-col">
+                <div class="chat-box">
+                    <ul class="messages"></ul>
+                </div>
+                <form class="message-form" onsubmit="return false;">
+                    <input class="msg-input"><button class="send-msg">Send</button>
+                </form>
+            </div>
+        </div>
     </div>
+    <footer>
+        <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+    </footer>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
+    <script src="./canvas.js"></script>
 </body>
 </html>

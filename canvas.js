@@ -352,3 +352,9 @@ send_btn.addEventListener('click', (event) => {
     socket.emit('send_msg', {'msg': input_msg.value});
     input_msg.value = '';
 });
+
+const usrname_btn = document.querySelector('.submit-username');
+usrname_btn.addEventListener('click', () => {
+    document.querySelector('.prompt').style.display = 'none';
+    document.querySelector('#room').style.display = 'flex';
+});
