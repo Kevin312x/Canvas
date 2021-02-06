@@ -20,6 +20,7 @@ input[type=number] {
 
 .container {
     width: 85%;
+    height: 100%;
     margin: 2rem auto;
 }
 
@@ -102,10 +103,13 @@ input[type=number] {
 }
 
 .brush-size {
-    box-sizing: border-box;
-    text-align: center;
     width: 45px;
     height: 100%;
+    text-align: center;
+}
+
+input {
+    box-sizing: border-box;
 }
 
 button {
@@ -165,7 +169,9 @@ footer {
 
 .prompt {
     width: 50%;
+    height: 100%;
     margin: 0 auto;
+    margin-top: 5%
 }
 
 .prompt h3 {
@@ -175,4 +181,38 @@ footer {
 
 #room {
     display: none;
+}
+
+.form {
+    border: 2px solid black;
+    border-radius: 15px;
+    height: min-content;
+    box-shadow: 5px 7px 11px -3px rgba(0,0,0,0.67);
+    padding: 1rem 3rem;
+}
+
+.form > .row {
+    height: 25px;
+}
+
+.form > .row * {
+    height: 100%;
+}
+
+.form input[type="text"] {
+    border-radius: 10px;
+    transition: all 1s ease, border-radius 0s;
+    width: 100%;
+    padding-left: 8px;
+    border: #999999 solid 2px;
+    outline: none;
+}
+
+.form input[type="text"]:focus {
+    border: #32a8e3 solid 2px;
+}
+
+.form label h3 {
+    margin: 0 auto;
+    margin-bottom: 1rem;;
 }
